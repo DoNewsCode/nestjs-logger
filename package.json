@@ -59,6 +59,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DoNewsCode/nestjs-config"
+    "url": "https://github.com/DoNewsCode/nestjs-logger"
   }
 }
