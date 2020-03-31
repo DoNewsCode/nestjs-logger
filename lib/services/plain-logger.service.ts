@@ -1,9 +1,19 @@
 import { Logger } from '@nestjs/common';
 import { LoggerInterface } from '../interfaces';
 
+type LevelTypes =
+  | 'error'
+  | 'warn'
+  | 'log'
+  | 'info'
+  | 'verbose'
+  | 'debug'
+  | 'silly';
+
 const level: { [key in string]: number } = {
   error: 0,
   warn: 1,
+  log: 2,
   info: 2,
   verbose: 3,
   debug: 4,
@@ -20,7 +30,7 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
     this.buffer = [];
   }
 
-  private prepare(message: any, context: any, outlevel: string): void {
+  private prepare(message: any, context: any, outlevel: LevelTypes): void {
     if (this.buffer !== undefined) {
       this.buffer.push({ message, context, level: outlevel });
     }
@@ -39,6 +49,9 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
   }
 
   log(message: any, context?: string): void {
+    if (level[PlainLoggerService.level] < 2) {
+      return;
+    }
     this.prepare(message, context, 'log');
     super.log(message, context);
   }
@@ -56,7 +69,7 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
       return;
     }
     this.prepare(message, context, 'warn');
-    super.log(message, context);
+    super.warn(message, context);
   }
 
   debug(message: any, context?: string): void {
