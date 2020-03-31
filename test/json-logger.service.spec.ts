@@ -9,7 +9,7 @@ describe('json-logger.service.spec', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         LoggerModule.forRoot({
-          loggerType: 'JsonLoggerService',
+          loggerType: 'json',
           loggerLevel: 'debug',
           context: 'test',
         }),
