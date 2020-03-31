@@ -1,0 +1,63 @@
+{
+  "name": "@donews/nestjs-logger",
+  "version": "0.1.0",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint \"{lib,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"lib/**/*.ts\" \"test/**/*.ts\"",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public",
+    "prepublish:next": "npm run build",
+    "publish:next": "npm publish --access public --tag next",
+    "test": "jest",
+    "prerelease": "npm run build",
+    "release": "release-it"
+  },
+  "dependencies": {
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-angular": "^8.3.4",
+    "@nestjs/common": "^7.0.7",
+    "@nestjs/core": "^7.0.7",
+    "@nestjs/platform-express": "^7.0.7",
+    "@nestjs/testing": "^7.0.7",
+    "@types/jest": "^25.1.4",
+    "@types/node": "7.10.8",
+    "@typescript-eslint/eslint-plugin": "2.25.0",
+    "@typescript-eslint/parser": "2.25.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.10.1",
+    "eslint-plugin-import": "2.20.1",
+    "husky": "^4.2.3",
+    "jest": "25.2.3",
+    "lint-staged": "^10.1.0",
+    "prettier": "2.0.2",
+    "reflect-metadata": "0.1.13",
+    "rimraf": "3.0.2",
+    "ts-jest": "25.2.1",
+    "typescript": "3.8.3"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -c .commitlintrc.json -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged && npm run test",
+      "pre-push": "npm run build -- --noEmit"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DoNewsCode/nestjs-config"
+  }
+}
