@@ -9,7 +9,7 @@ describe('plain-logger.service test', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         LoggerModule.forRoot({
-          loggerType: 'PlainLoggerService',
+          loggerType: 'plain',
           loggerLevel: 'debug',
           context: 'test',
         }),
