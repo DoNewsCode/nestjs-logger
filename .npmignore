@@ -12,7 +12,7 @@ node_modules
 
 # source
 lib
-tests
+test
 .commitlintrc.json
 .eslintignore
 .eslintrc.js
