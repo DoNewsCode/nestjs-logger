@@ -5,26 +5,23 @@ import { JsonLoggerService, PlainLoggerService } from './services';
 @Module({})
 export class LoggerModule {
   static forRoot(options: {
-    loggerType: string;
+    loggerType: 'json' | 'plain';
     loggerLevel: string;
     context: string;
   }): DynamicModule {
     const providers: FactoryProvider[] = [];
 
-    if (
-      options.loggerType !== JsonLoggerService.name &&
-      options.loggerType !== PlainLoggerService.name
-    ) {
+    if (options.loggerType !== 'json' && options.loggerType !== 'plain') {
       throw new ReferenceError(
         `The logger type ${options.loggerType} is not supported`,
       );
     }
 
     let LoggerService: any;
-    if (options.loggerType === JsonLoggerService.name) {
+    if (options.loggerType === 'json') {
       LoggerService = JsonLoggerService;
     }
-    if (options.loggerType === PlainLoggerService.name) {
+    if (options.loggerType === 'plain') {
       LoggerService = PlainLoggerService;
     }
 
