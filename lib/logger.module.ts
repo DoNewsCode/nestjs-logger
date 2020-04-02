@@ -1,7 +1,8 @@
-import { DynamicModule, FactoryProvider, Module } from '@nestjs/common';
+import { DynamicModule, FactoryProvider, Global, Module } from '@nestjs/common';
 import { LOGGER } from './constant';
 import { JsonLoggerService, PlainLoggerService } from './services';
 
+@Global()
 @Module({})
 export class LoggerModule {
   static forRoot(options: {
