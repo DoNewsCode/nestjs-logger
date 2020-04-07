@@ -28,10 +28,7 @@ export class JsonLoggerService implements LoggerInterface {
     if (typeof str !== 'string') {
       return false;
     }
-    if (str.startsWith('{"')) {
-      return true;
-    }
-    if (str.endsWith(']') && str.startsWith('[')) {
+    if (/^{|(^\[.*]$)/gi.test(str)) {
       return true;
     }
     return false;
