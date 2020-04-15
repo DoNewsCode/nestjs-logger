@@ -1,16 +1,25 @@
-import { DynamicModule, FactoryProvider, Global, Module } from '@nestjs/common';
-import { LOGGER } from './constant';
+import {
+  DynamicModule,
+  FactoryProvider,
+  Global,
+  Module,
+  Provider,
+  Type,
+  ValueProvider,
+} from '@nestjs/common';
+import { LOGGER, LOGGER_MODULE_OPTIONS } from './constant';
 import { JsonLoggerService, PlainLoggerService } from './services';
+import {
+  LoggerModuleAsyncOptions,
+  LoggerOptions,
+  LoggerOptionsFactory,
+} from './interfaces';
 
 @Global()
 @Module({})
 export class LoggerModule {
-  static forRoot(options: {
-    loggerType: 'json' | 'plain';
-    loggerLevel: string;
-    context: string;
-  }): DynamicModule {
-    const providers: FactoryProvider[] = [];
+  static forRoot(options: LoggerOptions): DynamicModule {
+    const providers: Provider[] = [];
 
     if (options.loggerType !== 'json' && options.loggerType !== 'plain') {
       throw new ReferenceError(
@@ -18,21 +27,27 @@ export class LoggerModule {
       );
     }
 
-    let LoggerService: any;
-    if (options.loggerType === 'json') {
-      LoggerService = JsonLoggerService;
-    }
-    if (options.loggerType === 'plain') {
-      LoggerService = PlainLoggerService;
-    }
+    const loggerOptionsProvider: ValueProvider = {
+      provide: LOGGER_MODULE_OPTIONS,
+      useValue: options,
+    };
+    providers.push(loggerOptionsProvider);
 
     const LoggerServiceProvider: FactoryProvider = {
       provide: LOGGER,
-      useFactory: () => {
-        const logInstance = new LoggerService(options.context);
-        logInstance.setLogLevel(options.loggerLevel);
+      useFactory: (_options: LoggerOptions) => {
+        let LoggerService: any;
+        if (_options.loggerType === 'json') {
+          LoggerService = JsonLoggerService;
+        }
+        if (_options.loggerType === 'plain') {
+          LoggerService = PlainLoggerService;
+        }
+        const logInstance = new LoggerService(_options.context);
+        logInstance.setLogLevel(_options.loggerLevel);
         return logInstance;
       },
+      inject: [LOGGER_MODULE_OPTIONS],
     };
     providers.push(LoggerServiceProvider);
 
@@ -40,6 +55,74 @@ export class LoggerModule {
       module: LoggerModule,
       providers: providers,
       exports: providers,
+    };
+  }
+
+  static forRootAsync(options: LoggerModuleAsyncOptions): DynamicModule {
+    const providers: Provider[] = [];
+
+    const LoggerServiceProvider: FactoryProvider = {
+      provide: LOGGER,
+      useFactory: (_options: LoggerOptions) => {
+        let LoggerService: any;
+        if (_options.loggerType === 'json') {
+          LoggerService = JsonLoggerService;
+        }
+        if (_options.loggerType === 'plain') {
+          LoggerService = PlainLoggerService;
+        }
+        const logInstance = new LoggerService(_options.context);
+        logInstance.setLogLevel(_options.loggerLevel);
+        return logInstance;
+      },
+      inject: [LOGGER_MODULE_OPTIONS],
+    };
+    providers.push(LoggerServiceProvider);
+
+    providers.push(...this.createAsyncProviders(options));
+    return {
+      module: LoggerModule,
+      imports: options.imports,
+      providers: providers,
+      exports: providers,
+    };
+  }
+
+  private static createAsyncProviders(
+    options: LoggerModuleAsyncOptions,
+  ): Provider[] {
+    if (options.useExisting || options.useFactory) {
+      return [this.createAsyncOptionsProvider(options)];
+    }
+    const useClass = options.useClass as Type<LoggerOptionsFactory>;
+    return [
+      this.createAsyncOptionsProvider(options),
+      {
+        provide: useClass,
+        useClass,
+      },
+    ];
+  }
+
+  private static createAsyncOptionsProvider(
+    options: LoggerModuleAsyncOptions,
+  ): Provider {
+    if (options.useFactory) {
+      return {
+        provide: LOGGER_MODULE_OPTIONS,
+        useFactory: options.useFactory,
+        inject: options.inject || [],
+      };
+    }
+
+    const inject = [
+      (options.useClass || options.useExisting) as Type<LoggerOptionsFactory>,
+    ];
+    return {
+      provide: LOGGER_MODULE_OPTIONS,
+      useFactory: async (optionsFactory: LoggerOptionsFactory) =>
+        await optionsFactory.createLoggerOptions(),
+      inject,
     };
   }
 }
