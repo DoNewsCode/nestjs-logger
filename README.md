@@ -41,7 +41,21 @@ import { Module } from '@nestjs/common';
 export class AppModule {}
 ```
 
-### 2. 使用
+### 2. 增加 asynchronous provider
+
+```typescript
+LoggerModule.forRootAsync({
+  imports: [ConfigModule],
+  useFactory: (configService: ConfigService) => ({
+    loggerType: configService.get('loggerType'),
+    loggerLevel: 'debug',
+    context: 'text',
+  }),
+  inject: [ConfigService],
+});
+```
+
+### 3. 使用
 
 ```typescript
 import { LoggerInterface, LOGGER } from '@donews/nestjs-logger';
