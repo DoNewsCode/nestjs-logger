@@ -10,7 +10,7 @@ describe('plain-logger.service test', () => {
       imports: [
         LoggerModule.forRoot({
           loggerType: 'plain',
-          loggerLevel: 'debug',
+          loggerLevel: 'verbose',
           context: 'test',
         }),
       ],
@@ -28,5 +28,15 @@ describe('plain-logger.service test', () => {
     log.info(JSON.stringify({ a: 1 }));
     log.warn(JSON.stringify({ a: 1 }));
     log.error(JSON.stringify({ a: 1 }));
+  });
+
+  it('just print ', () => {
+    let log = app.get<'string', LoggerInterface>(LOGGER);
+    log.error('error', 'error.stack', 'error');
+    log.warn('warn', 'warn');
+    log.log('log', 'log');
+    log.info('info', 'info');
+    log.debug('debug', 'debug');
+    log.verbose('verbose', 'verbose');
   });
 });

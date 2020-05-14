@@ -10,7 +10,7 @@ describe('json-logger.service.spec', () => {
       imports: [
         LoggerModule.forRoot({
           loggerType: 'json',
-          loggerLevel: 'debug',
+          loggerLevel: 'verbose',
           context: 'test',
         }),
       ],
@@ -23,5 +23,15 @@ describe('json-logger.service.spec', () => {
   it('test', () => {
     let log = app.get<'string', LoggerInterface>(LOGGER);
     log.info(JSON.stringify({ a: 1 }));
+  });
+
+  it('just print ', () => {
+    let log = app.get<'string', LoggerInterface>(LOGGER);
+    log.error('error', 'error.stack', 'error');
+    log.warn('warn', 'warn');
+    log.log('log', 'log');
+    log.info('info', 'info');
+    log.debug('debug', 'debug');
+    log.verbose('verbose', 'verbose');
   });
 });

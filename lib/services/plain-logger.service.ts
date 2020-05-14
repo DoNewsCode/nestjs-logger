@@ -1,23 +1,15 @@
 import { Logger } from '@nestjs/common';
 import { LoggerInterface } from '../interfaces';
 
-type LevelTypes =
-  | 'error'
-  | 'warn'
-  | 'log'
-  | 'info'
-  | 'verbose'
-  | 'debug'
-  | 'silly';
+type LevelTypes = 'error' | 'warn' | 'log' | 'info' | 'verbose' | 'debug';
 
 const level: { [key in string]: number } = {
   error: 0,
   warn: 1,
   log: 2,
   info: 2,
-  verbose: 3,
-  debug: 4,
-  silly: 5,
+  debug: 3,
+  verbose: 4,
 };
 
 export class PlainLoggerService extends Logger implements LoggerInterface {
@@ -48,6 +40,14 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
     super.error(message, trace, context);
   }
 
+  warn(message: any, context?: string): void {
+    if (level[PlainLoggerService.level] < 1) {
+      return;
+    }
+    this.prepare(message, context, 'warn');
+    super.warn(message, context);
+  }
+
   log(message: any, context?: string): void {
     if (level[PlainLoggerService.level] < 2) {
       return;
@@ -64,16 +64,8 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
     super.log(message, context);
   }
 
-  warn(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 1) {
-      return;
-    }
-    this.prepare(message, context, 'warn');
-    super.warn(message, context);
-  }
-
   debug(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 4) {
+    if (level[PlainLoggerService.level] < 3) {
       return;
     }
     this.prepare(message, context, 'debug');
@@ -81,7 +73,7 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
   }
 
   verbose(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 3) {
+    if (level[PlainLoggerService.level] < 4) {
       return;
     }
     this.prepare(message, context, 'verbose');

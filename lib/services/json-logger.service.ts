@@ -9,12 +9,21 @@ const jsonFormatter = (logEntry: any) => {
   return logEntry;
 };
 
+const myCustomLevels: { [key in keyof Partial<LoggerInterface>]: number } = {
+  error: 0,
+  warn: 1,
+  info: 2, // log info 等价，但是因为winston 不允许log level。。。
+  debug: 3,
+  verbose: 4,
+};
+
 export class JsonLoggerService implements LoggerInterface {
   private buffer: any[];
   private readonly context: string;
   private static readonly transport = new winston.transports.Console();
   public static readonly logger = winston.createLogger({
     level: 'debug',
+    levels: myCustomLevels,
     format: winston.format(jsonFormatter)(),
     transports: JsonLoggerService.transport,
   });
@@ -54,16 +63,16 @@ export class JsonLoggerService implements LoggerInterface {
     });
   }
 
-  log(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'log');
-    JsonLoggerService.logger.log('info', formatted, {
+  warn(message: string, context?: string): void {
+    const formatted = this.prepare(message, context, 'warn');
+    JsonLoggerService.logger.warn(formatted, {
       context: context || this.context,
     });
   }
 
-  warn(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'warn');
-    JsonLoggerService.logger.warn(formatted, {
+  log(message: string, context?: string): void {
+    const formatted = this.prepare(message, context, 'log');
+    JsonLoggerService.logger.info(formatted, {
       context: context || this.context,
     });
   }
