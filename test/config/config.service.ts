@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { LOGGER_TYPE } from '../../lib';
 
 @Injectable()
 export class ConfigService {
-  getJson(): 'json' {
-    return 'json';
+  getJson(): LOGGER_TYPE {
+    return LOGGER_TYPE.JSON_MODEL;
   }
-  getPlain(): 'plain' {
-    return 'plain';
+  getPlain(): LOGGER_TYPE {
+    return LOGGER_TYPE.PLAIN_MODEL;
   }
 }

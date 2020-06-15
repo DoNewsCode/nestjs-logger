@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { LOGGER, LoggerInterface, LoggerModule } from '../lib';
+import { LOGGER, LOGGER_TYPE, LoggerInterface, LoggerModule } from '../lib';
 
 describe('json-logger.service.spec', () => {
   let app: INestApplication;
@@ -9,7 +9,7 @@ describe('json-logger.service.spec', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         LoggerModule.forRoot({
-          loggerType: 'json',
+          loggerType: LOGGER_TYPE.JSON_MODEL,
           loggerLevel: 'verbose',
           context: 'test',
         }),

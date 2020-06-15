@@ -28,11 +28,12 @@ $ npm i @donews/nestjs-logger
 ```typescript
 import { LoggerModule } from '@donews/nestjs-logger';
 import { Module } from '@nestjs/common';
+import { LOGGER_TYPE } from './constant';
 
 @Module({
   imports: [
     LoggerModule.forRoot({
-      loggerType: 'json',
+      loggerType: LOGGER_TYPE.JSON_MODEL,
       loggerLevel: 'debug',
       context: 'text',
     }),

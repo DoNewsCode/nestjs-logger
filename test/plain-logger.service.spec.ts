@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { LOGGER, LoggerInterface, LoggerModule } from '../lib';
+import { LOGGER, LOGGER_TYPE, LoggerInterface, LoggerModule } from '../lib';
 
 describe('plain-logger.service test', () => {
   let app: INestApplication;
@@ -9,7 +9,7 @@ describe('plain-logger.service test', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         LoggerModule.forRoot({
-          loggerType: 'plain',
+          loggerType: LOGGER_TYPE.PLAIN_MODEL,
           loggerLevel: 'verbose',
           context: 'test',
         }),

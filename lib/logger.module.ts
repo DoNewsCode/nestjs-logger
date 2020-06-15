@@ -7,7 +7,8 @@ import {
   Type,
   ValueProvider,
 } from '@nestjs/common';
-import { LOGGER, LOGGER_MODULE_OPTIONS } from './constant';
+
+import { LOGGER, LOGGER_MODULE_OPTIONS, LOGGER_TYPE } from './constant';
 import { JsonLoggerService, PlainLoggerService } from './services';
 import {
   LoggerModuleAsyncOptions,
@@ -21,12 +22,6 @@ export class LoggerModule {
   static forRoot(options: LoggerOptions): DynamicModule {
     const providers: Provider[] = [];
 
-    if (options.loggerType !== 'json' && options.loggerType !== 'plain') {
-      throw new ReferenceError(
-        `The logger type ${options.loggerType} is not supported`,
-      );
-    }
-
     const loggerOptionsProvider: ValueProvider = {
       provide: LOGGER_MODULE_OPTIONS,
       useValue: options,
@@ -37,10 +32,10 @@ export class LoggerModule {
       provide: LOGGER,
       useFactory: (_options: LoggerOptions) => {
         let LoggerService: any;
-        if (_options.loggerType === 'json') {
+        if (_options.loggerType === LOGGER_TYPE.JSON_MODEL) {
           LoggerService = JsonLoggerService;
         }
-        if (_options.loggerType === 'plain') {
+        if (_options.loggerType === LOGGER_TYPE.PLAIN_MODEL) {
           LoggerService = PlainLoggerService;
         }
         const logInstance = new LoggerService(_options.context);
@@ -65,10 +60,10 @@ export class LoggerModule {
       provide: LOGGER,
       useFactory: (_options: LoggerOptions) => {
         let LoggerService: any;
-        if (_options.loggerType === 'json') {
+        if (_options.loggerType === LOGGER_TYPE.JSON_MODEL) {
           LoggerService = JsonLoggerService;
         }
-        if (_options.loggerType === 'plain') {
+        if (_options.loggerType === LOGGER_TYPE.PLAIN_MODEL) {
           LoggerService = PlainLoggerService;
         }
         const logInstance = new LoggerService(_options.context);
