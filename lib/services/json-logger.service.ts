@@ -18,7 +18,6 @@ const myCustomLevels: { [key in keyof Partial<LoggerInterface>]: number } = {
 };
 
 export class JsonLoggerService implements LoggerInterface {
-  private buffer: any[];
   private readonly context: string;
   private static readonly transport = new winston.transports.Console();
   public static readonly logger = winston.createLogger({
@@ -29,70 +28,60 @@ export class JsonLoggerService implements LoggerInterface {
   });
 
   constructor(context?: string) {
-    this.context = context || 'HTTP';
-    this.buffer = [];
+    this.context = context || 'UserScope';
   }
 
-  private isJson(str: string): boolean {
+  private static isJson(str: string): boolean {
     if (typeof str !== 'string') {
       return false;
     }
-    if (/^{|(^\[.*]$)/gi.test(str)) {
-      return true;
-    }
-    return false;
+    return /^{|(^\[.*]$)/gi.test(str);
   }
 
-  private prepare(message: string, context?: string, level?: string): string {
-    if (this.buffer !== undefined) {
-      this.buffer.push({ message, context, level });
-    }
+  private static prepare(message: string): string {
     // 防止message字段答应出json结构，导致es解析失败
-    return this.isJson(message) ? '\\' + message : message;
-  }
-
-  getBuffer(): any[] | undefined {
-    return this.buffer;
+    return JsonLoggerService.isJson(message) ? '\\' + message : message;
   }
 
   error(message: string, trace?: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'error');
+    const formatted = JsonLoggerService.prepare(message);
+    const formattedTrace = JsonLoggerService.prepare(trace);
     JsonLoggerService.logger.error(formatted, {
       context: context || this.context,
-      trace,
+      formattedTrace,
     });
   }
 
   warn(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'warn');
+    const formatted = JsonLoggerService.prepare(message);
     JsonLoggerService.logger.warn(formatted, {
       context: context || this.context,
     });
   }
 
   log(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'log');
+    const formatted = JsonLoggerService.prepare(message);
     JsonLoggerService.logger.info(formatted, {
       context: context || this.context,
     });
   }
 
   info(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'info');
+    const formatted = JsonLoggerService.prepare(message);
     JsonLoggerService.logger.info(formatted, {
       context: context || this.context,
     });
   }
 
   debug(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'debug');
+    const formatted = JsonLoggerService.prepare(message);
     JsonLoggerService.logger.debug(formatted, {
       context: context || this.context,
     });
   }
 
   verbose(message: string, context?: string): void {
-    const formatted = this.prepare(message, context, 'verbose');
+    const formatted = JsonLoggerService.prepare(message);
     JsonLoggerService.logger.verbose(formatted, context || this.context);
   }
 
