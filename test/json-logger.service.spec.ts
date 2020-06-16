@@ -35,40 +35,60 @@ describe('json-logger.service.spec', () => {
     log.verbose('verbose', 'verbose');
   });
 
-  it('regex print', () => {
+  it('setLogContextRegex test', () => {
     const log = app.get<'string', LoggerInterface>(LOGGER);
     log.setLogLevel('error');
 
     // debug 默认不显示
-    log.debug('x', '');
-    log.setLogContextRegex(['test']);
-    log.debug(JSON.stringify({ test: 'x' }), 'test');
-
     log.setLogContextRegex(['test1']);
-    log.debug(JSON.stringify({ test: 'y' }), 'test');
-    log.setLogContextRegex(['test2']);
-    log.debug(JSON.stringify({ test: 'y' }), 'test');
-    log.debug(JSON.stringify({ test: 'z' }), 'test2');
+    log.verbose(JSON.stringify({ test: '条件：[test1] 不出' }), '');
+    log.verbose(JSON.stringify({ test: '条件：[test1] 出' }), 'test1'); // 出
+
+    log.setLogContextRegex('test2');
+    log.verbose(JSON.stringify({ test: '条件：test2 不出' }), 'test'); // 不出
+    log.verbose(JSON.stringify({ test: '条件：test2 出' }), 'test2'); // 出
+
+    log.setLogContextRegex(/test3/);
+    log.verbose(JSON.stringify({ test: '条件：/test3/ 不出' }), 'test'); // 不出
+    log.verbose(JSON.stringify({ test: '条件：/test3/ 出' }), 'test3'); // 出
+
+    log.setLogContextRegex([/test4/]);
+    log.verbose(JSON.stringify({ test: '条件：[test4] 不出' }), 'test'); // 不出
+    log.verbose(JSON.stringify({ test: '条件：[test4] 出' }), 'test4'); // 出
   });
 
-  it('module init regex inject test', async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        LoggerModule.forRoot({
-          loggerType: LOGGER_TYPE.JSON_MODEL,
-          loggerLevel: 'error',
-          context: 'test',
-          loggerContextList: ['regex test'],
-        }),
-      ],
-    }).compile();
+  it('module init contextList test', async () => {
+    const log = await generatorLog(['regex test']);
+    log.debug(`条件：['regex test'] 不出`, 's');
+    log.debug(`条件：['regex test'] 出`, 'regex test');
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    const log2 = await generatorLog([/regex te.*/]);
+    log2.debug(`条件：[/regex te.*/] 不出`, 's');
+    log2.debug(`条件：[/regex te.*/] 出`, 'regex test');
 
-    const log = app.get<'string', LoggerInterface>(LOGGER);
+    const log3 = await generatorLog('regex test');
+    log3.debug(`条件：regex test 不出`, 's');
+    log3.debug(`条件：regex test 出`, 'regex test');
 
-    log.debug('test', 's');
-    log.debug('test', 'regex test');
+    const log4 = await generatorLog(/regex te.*/);
+    log4.debug(`条件：regex test 不出`, 's');
+    log4.debug(`条件：regex test 出`, 'regex test');
+
+    async function generatorLog(contextList) {
+      const moduleFixture: TestingModule = await Test.createTestingModule({
+        imports: [
+          LoggerModule.forRoot({
+            loggerType: LOGGER_TYPE.JSON_MODEL,
+            loggerLevel: 'error',
+            context: 'test',
+            loggerContextList: contextList,
+          }),
+        ],
+      }).compile();
+
+      app = moduleFixture.createNestApplication();
+      await app.init();
+      return app.get<'string', LoggerInterface>(LOGGER);
+    }
   });
 });

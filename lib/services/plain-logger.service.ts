@@ -1,35 +1,23 @@
 import { Logger } from '@nestjs/common';
-import { LoggerLevel } from '../constant';
+import { DonewsLoggerLevels, LoggerLevel } from '../constant';
 import { LoggerInterface, LoggerOptions } from '../interfaces';
-
-const levelMap: { [key in LoggerLevel]: number } = {
-  error: 0,
-  warn: 1,
-  log: 2,
-  info: 2,
-  debug: 3,
-  verbose: 4,
-};
+import { CommonUtil } from '../util/common.util';
 
 export class PlainLoggerService extends Logger implements LoggerInterface {
-  private loggerLevel: string;
+  private loggerLevel: LoggerLevel;
   private loggerContextRegexList: RegExp[] = [];
 
   constructor(loggerOptions: LoggerOptions) {
     super(loggerOptions.context);
-    this.loggerLevel = loggerOptions.loggerLevel || 'debug';
+    this.setLogLevel(loggerOptions.loggerLevel);
     this.setLogContextRegex(loggerOptions.loggerContextList);
   }
 
   isPrint(level: LoggerLevel, context?: string): boolean {
-    if (this.loggerContextRegexList.length >= 0) {
-      for (const regex of this.loggerContextRegexList) {
-        if (regex.test(context)) {
-          return true;
-        }
-      }
+    if (CommonUtil.checkContextRegex(this.loggerContextRegexList, context)) {
+      return true;
     }
-    return levelMap[this.loggerLevel] >= levelMap[level];
+    return DonewsLoggerLevels[this.loggerLevel] >= DonewsLoggerLevels[level];
   }
 
   error(message: string, trace?: string, context?: string): void {
@@ -74,23 +62,11 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
     super.verbose(message, context);
   }
 
-  setLogLevel(logLevel: string): void {
-    this.loggerLevel = logLevel;
+  setLogLevel(logLevel: LoggerLevel): void {
+    this.loggerLevel = CommonUtil.checkLogLevel(logLevel);
   }
 
-  setLogContextRegex(contextList: (string | RegExp | number)[] = []): void {
-    this.loggerContextRegexList = contextList.reduce(
-      (acc, context: string | RegExp) => {
-        if (typeof context === 'string' || typeof context === 'number') {
-          acc.push(new RegExp(context));
-        } else if (context instanceof RegExp) {
-          acc.push(context);
-        } else {
-          throw new Error('please input string or regex');
-        }
-        return acc;
-      },
-      [],
-    );
+  setLogContextRegex(contextList: string | RegExp | (string | RegExp)[]): void {
+    this.loggerContextRegexList = CommonUtil.getContextRegexList(contextList);
   }
 }

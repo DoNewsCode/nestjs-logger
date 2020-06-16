@@ -7,14 +7,14 @@ export interface LoggerInterface extends LoggerService {
   info(message: string, context?: string): void;
   error(message: string, trace?: string, context?: string): void;
   setLogLevel(logLevel: string): void;
-  setLogContextRegex(contextList: (string | RegExp)[]): void;
+  setLogContextRegex(contextList: string | RegExp | (string | RegExp)[]): void;
 }
 
 export interface LoggerOptions {
   context?: string;
   loggerType?: LOGGER_TYPE;
   loggerLevel?: LoggerLevel;
-  loggerContextList?: (string | RegExp | number)[];
+  loggerContextList?: string | RegExp | (string | RegExp)[];
 }
 
 export interface LoggerOptionsFactory {

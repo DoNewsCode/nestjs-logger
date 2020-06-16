@@ -13,3 +13,12 @@ export type LoggerLevel =
   | 'info'
   | 'verbose'
   | 'debug';
+
+export const DonewsLoggerLevels: { [key in LoggerLevel]: number } = {
+  error: 0,
+  warn: 1,
+  log: 2,
+  info: 2,
+  debug: 3,
+  verbose: 4,
+};
