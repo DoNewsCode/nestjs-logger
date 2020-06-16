@@ -5,3 +5,11 @@ export const enum LOGGER_TYPE {
   JSON_MODEL = 'json',
   PLAIN_MODEL = 'plain',
 }
+
+export type LoggerLevel =
+  | 'error'
+  | 'warn'
+  | 'log'
+  | 'info'
+  | 'verbose'
+  | 'debug';

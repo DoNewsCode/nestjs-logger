@@ -1,9 +1,8 @@
 import { Logger } from '@nestjs/common';
-import { LoggerInterface } from '../interfaces';
+import { LoggerLevel } from '../constant';
+import { LoggerInterface, LoggerOptions } from '../interfaces';
 
-type LevelTypes = 'error' | 'warn' | 'log' | 'info' | 'verbose' | 'debug';
-
-const level: { [key in string]: number } = {
+const levelMap: { [key in LoggerLevel]: number } = {
   error: 0,
   warn: 1,
   log: 2,
@@ -13,74 +12,85 @@ const level: { [key in string]: number } = {
 };
 
 export class PlainLoggerService extends Logger implements LoggerInterface {
-  private static level: string;
-  private buffer: any[];
+  private loggerLevel: string;
+  private loggerContextRegexList: RegExp[] = [];
 
-  constructor(context?: string) {
-    super(context);
-    PlainLoggerService.level = 'debug';
-    this.buffer = [];
+  constructor(loggerOptions: LoggerOptions) {
+    super(loggerOptions.context);
+    this.loggerLevel = loggerOptions.loggerLevel || 'debug';
+    this.setLogContextRegex(loggerOptions.loggerContextList);
   }
 
-  private prepare(message: any, context: any, outlevel: LevelTypes): void {
-    if (this.buffer !== undefined) {
-      this.buffer.push({ message, context, level: outlevel });
+  isPrint(level: LoggerLevel, context?: string): boolean {
+    if (this.loggerContextRegexList.length >= 0) {
+      for (const regex of this.loggerContextRegexList) {
+        if (regex.test(context)) {
+          return true;
+        }
+      }
     }
+    return levelMap[this.loggerLevel] >= levelMap[level];
   }
 
-  getBuffer(): any[] | undefined {
-    return this.buffer;
-  }
-
-  error(message: any, trace?: string, context?: string): void {
-    if (level[PlainLoggerService.level] < 0) {
+  error(message: string, trace?: string, context?: string): void {
+    if (!this.isPrint('error', context)) {
       return;
     }
-    this.prepare(message, context, 'error');
     super.error(message, trace, context);
   }
 
-  warn(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 1) {
+  warn(message: string, context?: string): void {
+    if (!this.isPrint('warn', context)) {
       return;
     }
-    this.prepare(message, context, 'warn');
     super.warn(message, context);
   }
 
-  log(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 2) {
+  log(message: string, context?: string): void {
+    if (!this.isPrint('log', context)) {
       return;
     }
-    this.prepare(message, context, 'log');
     super.log(message, context);
   }
 
-  info(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 2) {
+  info(message: string, context?: string): void {
+    if (!this.isPrint('info', context)) {
       return;
     }
-    this.prepare(message, context, 'info');
     super.log(message, context);
   }
 
-  debug(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 3) {
+  debug(message: string, context?: string): void {
+    if (!this.isPrint('debug', context)) {
       return;
     }
-    this.prepare(message, context, 'debug');
     super.debug(message, context);
   }
 
-  verbose(message: any, context?: string): void {
-    if (level[PlainLoggerService.level] < 4) {
+  verbose(message: string, context?: string): void {
+    if (!this.isPrint('verbose', context)) {
       return;
     }
-    this.prepare(message, context, 'verbose');
     super.verbose(message, context);
   }
 
   setLogLevel(logLevel: string): void {
-    PlainLoggerService.level = logLevel;
+    this.loggerLevel = logLevel;
+  }
+
+  setLogContextRegex(contextList: (string | RegExp | number)[] = []): void {
+    this.loggerContextRegexList = contextList.reduce(
+      (acc, context: string | RegExp) => {
+        if (typeof context === 'string' || typeof context === 'number') {
+          acc.push(new RegExp(context));
+        } else if (context instanceof RegExp) {
+          acc.push(context);
+        } else {
+          throw new Error('please input string or regex');
+        }
+        return acc;
+      },
+      [],
+    );
   }
 }

@@ -1,18 +1,20 @@
 import { LoggerService, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 
-import { LOGGER_TYPE } from '../constant';
+import { LoggerLevel, LOGGER_TYPE } from '../constant';
 
 export interface LoggerInterface extends LoggerService {
   info(message: string, context?: string): void;
   error(message: string, trace?: string, context?: string): void;
+  setLogLevel(logLevel: string): void;
+  setLogContextRegex(contextList: (string | RegExp)[]): void;
 }
 
 export interface LoggerOptions {
-  loggerType: LOGGER_TYPE;
-  loggerLevel: string;
-  context: string;
-  loggerRegex: string | RegExp;
+  context?: string;
+  loggerType?: LOGGER_TYPE;
+  loggerLevel?: LoggerLevel;
+  loggerContextList?: (string | RegExp | number)[];
 }
 
 export interface LoggerOptionsFactory {

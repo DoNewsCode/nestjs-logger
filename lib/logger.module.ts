@@ -38,7 +38,7 @@ export class LoggerModule {
         if (_options.loggerType === LOGGER_TYPE.PLAIN_MODEL) {
           LoggerService = PlainLoggerService;
         }
-        const logInstance = new LoggerService(_options.context);
+        const logInstance = new LoggerService(_options);
         logInstance.setLogLevel(_options.loggerLevel);
         return logInstance;
       },
@@ -66,7 +66,7 @@ export class LoggerModule {
         if (_options.loggerType === LOGGER_TYPE.PLAIN_MODEL) {
           LoggerService = PlainLoggerService;
         }
-        const logInstance = new LoggerService(_options.context);
+        const logInstance = new LoggerService(_options);
         logInstance.setLogLevel(_options.loggerLevel);
         return logInstance;
       },
