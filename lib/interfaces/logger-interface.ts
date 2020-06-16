@@ -6,7 +6,7 @@ import { LoggerLevel, LOGGER_TYPE } from '../constant';
 export interface LoggerInterface extends LoggerService {
   info(message: string, context?: string): void;
   error(message: string, trace?: string, context?: string): void;
-  setLogLevel(logLevel: string): void;
+  setLogLevel(logLevel: LoggerLevel): void;
   setLogContextRegex(contextList: string | RegExp | (string | RegExp)[]): void;
 }
 
