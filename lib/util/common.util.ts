@@ -4,7 +4,7 @@ import { DonewsLoggerLevels, LoggerLevel } from '../constant';
  * Created by Rain on 2020/6/16
  */
 export class CommonUtil {
-  static checkContextRegex(regexList: RegExp[], context: string): boolean {
+  static checkContextByRegex(regexList: RegExp[], context: string): boolean {
     if (!regexList || !Array.isArray(regexList)) {
       return false;
     }
@@ -18,7 +18,7 @@ export class CommonUtil {
     return false;
   }
 
-  static getContextRegexList(
+  static generateContextRegexList(
     contextList: string | RegExp | (string | RegExp)[],
   ): RegExp[] {
     let array = [];

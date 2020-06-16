@@ -9,22 +9,22 @@ describe('common util ', () => {
     it('null context', () => {
       const regex = null;
       assert.strictEqual(
-        CommonUtil.checkContextRegex(regex, 'context1'),
+        CommonUtil.checkContextByRegex(regex, 'context1'),
         false,
       );
       assert.strictEqual(
-        CommonUtil.checkContextRegex(regex, 'context1'),
+        CommonUtil.checkContextByRegex(regex, 'context1'),
         false,
       );
     });
     it('empty array context', () => {
       const regex = [];
       assert.strictEqual(
-        CommonUtil.checkContextRegex(regex, 'context1'),
+        CommonUtil.checkContextByRegex(regex, 'context1'),
         false,
       );
       assert.strictEqual(
-        CommonUtil.checkContextRegex(regex, 'context1'),
+        CommonUtil.checkContextByRegex(regex, 'context1'),
         false,
       );
     });
@@ -32,11 +32,11 @@ describe('common util ', () => {
     it('regex', () => {
       const regex = [/context1.*ts/];
       assert.strictEqual(
-        CommonUtil.checkContextRegex(regex, 'context1-xxx.ts'),
+        CommonUtil.checkContextByRegex(regex, 'context1-xxx.ts'),
         true,
       );
       assert.strictEqual(
-        CommonUtil.checkContextRegex(regex, 'context2-xx.ts'),
+        CommonUtil.checkContextByRegex(regex, 'context2-xx.ts'),
         false,
       );
     });
@@ -44,43 +44,45 @@ describe('common util ', () => {
 
   describe('getContextRegexList', () => {
     it('字符串 数字', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList('0');
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList('0');
       assert.strictEqual(regexList[0].test('0'), true);
       assert.strictEqual(regexList[0].test('1'), false);
     });
 
     it('字符串 数字 数组', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList('0');
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList('0');
       assert.strictEqual(regexList[0].test('0'), true);
       assert.strictEqual(regexList[0].test('1'), false);
     });
 
     it('字符串 ', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList('test');
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList('test');
       assert.strictEqual(regexList[0].test('test'), true);
       assert.strictEqual(regexList[0].test('tes2'), false);
     });
 
     it('字符串 数组', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList(['test']);
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList(['test']);
       assert.strictEqual(regexList[0].test('test'), true);
       assert.strictEqual(regexList[0].test('tes2'), false);
     });
 
     it('正则', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList(/te.*1/);
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList(/te.*1/);
       assert.strictEqual(regexList[0].test('testx1'), true);
       assert.strictEqual(regexList[0].test('testx2'), false);
     });
 
     it('正则数组', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList([/te.*1/]);
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList([
+        /te.*1/,
+      ]);
       assert.strictEqual(regexList[0].test('testx1'), true);
       assert.strictEqual(regexList[0].test('testx2'), false);
     });
 
     it('混合参数 数组', () => {
-      const regexList: RegExp[] = CommonUtil.getContextRegexList([
+      const regexList: RegExp[] = CommonUtil.generateContextRegexList([
         '0',
         'test',
         /te.*1/,

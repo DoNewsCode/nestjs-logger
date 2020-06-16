@@ -14,7 +14,7 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
   }
 
   isPrint(level: LoggerLevel, context?: string): boolean {
-    if (CommonUtil.checkContextRegex(this.loggerContextRegexList, context)) {
+    if (CommonUtil.checkContextByRegex(this.loggerContextRegexList, context)) {
       return true;
     }
     return DonewsLoggerLevels[this.loggerLevel] >= DonewsLoggerLevels[level];
@@ -67,6 +67,8 @@ export class PlainLoggerService extends Logger implements LoggerInterface {
   }
 
   setLogContextRegex(contextList: string | RegExp | (string | RegExp)[]): void {
-    this.loggerContextRegexList = CommonUtil.getContextRegexList(contextList);
+    this.loggerContextRegexList = CommonUtil.generateContextRegexList(
+      contextList,
+    );
   }
 }
