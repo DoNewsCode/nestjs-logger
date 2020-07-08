@@ -1,4 +1,4 @@
-import { DonewsLoggerLevels, LoggerLevel } from '../constant';
+import { DonewsLoggerLevels, LOGGER_TYPE, LoggerLevel } from '../constant';
 
 /**
  * Created by Rain on 2020/6/16
@@ -50,5 +50,16 @@ export class CommonUtil {
       throw new Error(`Please input correct logLevel,current:${logLevel}`);
     }
     return logLevel || 'debug';
+  }
+
+  static checkLogType(logType: string): boolean {
+    if (
+      LOGGER_TYPE.PLAIN_MODEL === logType ||
+      LOGGER_TYPE.JSON_MODEL === logType
+    ) {
+      return true;
+    } else {
+      throw new Error('Please input correct logger type[json,plain]!');
+    }
   }
 }

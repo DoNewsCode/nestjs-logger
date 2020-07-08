@@ -15,6 +15,7 @@ import {
   LoggerOptions,
   LoggerOptionsFactory,
 } from './interfaces';
+import { CommonUtil } from './util/common.util';
 
 @Global()
 @Module({})
@@ -31,6 +32,8 @@ export class LoggerModule {
     const LoggerServiceProvider: FactoryProvider = {
       provide: LOGGER,
       useFactory: (_options: LoggerOptions) => {
+        CommonUtil.checkLogType(_options.loggerType);
+
         let LoggerService: any;
         if (_options.loggerType === LOGGER_TYPE.JSON_MODEL) {
           LoggerService = JsonLoggerService;
@@ -59,6 +62,8 @@ export class LoggerModule {
     const LoggerServiceProvider: FactoryProvider = {
       provide: LOGGER,
       useFactory: (_options: LoggerOptions) => {
+        CommonUtil.checkLogType(_options.loggerType);
+
         let LoggerService: any;
         if (_options.loggerType === LOGGER_TYPE.JSON_MODEL) {
           LoggerService = JsonLoggerService;
