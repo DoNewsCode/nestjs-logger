@@ -2,14 +2,14 @@
 
 ## 描述
 
-基于`winston`和 nest`内置logger`的[Nest](https://github.com/nestjs/nest)日志 module。
+基于 自我实现伪 json 输出 和 nest`内置logger`的[Nest](https://github.com/nestjs/nest)日志 module。
 
-1. json 格式输出输出基于[winston](https://github.com/winstonjs/winston)
+1. json （伪）
 2. plain 格式输出基于 nest 内置 logger
 
 ## Install
 
-```bash
+```shell script
 $ npm i @donews/nestjs-logger
 ```
 
@@ -26,9 +26,8 @@ $ npm i @donews/nestjs-logger
 ### 1. 模块导入
 
 ```typescript
-import { LoggerModule } from '@donews/nestjs-logger';
+import { LOGGER_TYPE, LoggerModule } from '@donews/nestjs-logger';
 import { Module } from '@nestjs/common';
-import { LOGGER_TYPE } from './constant';
 
 @Module({
   imports: [
