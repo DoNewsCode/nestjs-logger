@@ -9,12 +9,12 @@ import {
 } from '@nestjs/common';
 
 import { LOGGER, LOGGER_MODULE_OPTIONS, LOGGER_TYPE } from './constant';
-import { JsonLoggerService, PlainLoggerService } from './services';
 import {
   LoggerModuleAsyncOptions,
   LoggerOptions,
   LoggerOptionsFactory,
 } from './interfaces';
+import { JsonLoggerService, PlainLoggerService } from './services';
 import { CommonUtil } from './util/common.util';
 
 @Global()

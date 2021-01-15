@@ -1,7 +1,7 @@
 import { LoggerService, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 
-import { LoggerLevel, LOGGER_TYPE } from '../constant';
+import { LOGGER_TYPE, LoggerLevel } from '../constant';
 
 export interface LoggerInterface extends LoggerService {
   info(message: string, context?: string): void;
