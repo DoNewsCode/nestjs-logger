@@ -75,6 +75,19 @@ class TestService {
 }
 ```
 
+### 4. 日志级别顺序
+
+| 级别    | 级别数 |
+| ------- | ------ |
+| error   | 0      |
+| warn    | 1      |
+| log     | 2      |
+| info    | 2      |
+| debug   | 3      |
+| verbose | 4      |
+
+级别从高到低
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
