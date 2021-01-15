@@ -1,6 +1,7 @@
 export const LOGGER = Symbol.for('logger');
 export const LOGGER_MODULE_OPTIONS = Symbol.for('LOGGER_MODULE_OPTIONS');
 
+// eslint-disable-next-line no-shadow
 export enum LOGGER_TYPE {
   JSON_MODEL = 'json',
   PLAIN_MODEL = 'plain',
