@@ -39,9 +39,10 @@ export class JsonLoggerService implements LoggerInterface {
     }
     const formatted = JsonLoggerService.prepare(message);
     const formattedTrace = JsonLoggerService.prepare(trace);
+    const formattedContext = JsonLoggerService.prepare(context);
     this.callFunction('error', formatted, {
       trace: formattedTrace,
-      context: context || this.context,
+      context: formattedContext || this.context,
     });
   }
 
@@ -50,8 +51,9 @@ export class JsonLoggerService implements LoggerInterface {
       return;
     }
     const formatted = JsonLoggerService.prepare(message);
+    const formattedContext = JsonLoggerService.prepare(context);
     this.callFunction('warn', formatted, {
-      context: context || this.context,
+      context: formattedContext || this.context,
     });
   }
 
@@ -60,8 +62,9 @@ export class JsonLoggerService implements LoggerInterface {
       return;
     }
     const formatted = JsonLoggerService.prepare(message);
+    const formattedContext = JsonLoggerService.prepare(context);
     this.callFunction('log', formatted, {
-      context: context || this.context,
+      context: formattedContext || this.context,
     });
   }
 
@@ -70,8 +73,9 @@ export class JsonLoggerService implements LoggerInterface {
       return;
     }
     const formatted = JsonLoggerService.prepare(message);
+    const formattedContext = JsonLoggerService.prepare(context);
     this.callFunction('info', formatted, {
-      context: context || this.context,
+      context: formattedContext || this.context,
     });
   }
 
@@ -80,8 +84,9 @@ export class JsonLoggerService implements LoggerInterface {
       return;
     }
     const formatted = JsonLoggerService.prepare(message);
+    const formattedContext = JsonLoggerService.prepare(context);
     this.callFunction('debug', formatted, {
-      context: context || this.context,
+      context: formattedContext || this.context,
     });
   }
 
@@ -90,8 +95,9 @@ export class JsonLoggerService implements LoggerInterface {
       return;
     }
     const formatted = JsonLoggerService.prepare(message);
+    const formattedContext = JsonLoggerService.prepare(context);
     this.callFunction('verbose', formatted, {
-      context: context || this.context,
+      context: formattedContext || this.context,
     });
   }
 
