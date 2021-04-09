@@ -120,8 +120,9 @@ export class LoggerModule {
     ];
     return {
       provide: LOGGER_MODULE_OPTIONS,
-      useFactory: async (optionsFactory: LoggerOptionsFactory) =>
-        await optionsFactory.createLoggerOptions(),
+      useFactory: async (
+        optionsFactory: LoggerOptionsFactory,
+      ): Promise<LoggerOptions> => await optionsFactory.createLoggerOptions(),
       inject,
     };
   }
